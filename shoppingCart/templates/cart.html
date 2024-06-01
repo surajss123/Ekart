@@ -1,0 +1,105 @@
+{% load static %}
+{% load multiply %}
+{% load get_total %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Products | RedStore</title>
+    <link rel="stylesheet" href="{% static 'css/style123.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">
+                <a href="index.html"><img src="{% static 'images/logo2.png' %}" alt="logo" width="125px"></a>
+            </div>
+            <nav>
+                <ul id="MenuItems">
+                    <li><a href="/index">Home</a></li>
+                    <li><a href="/products">Products</a></li>
+                    <li><a href="/accounts">Account</a></li>
+                </ul>
+            </nav>
+            <a href="/cart"><img src="{% static 'images/cart.png' %}" width="30px" height="30px"></a>
+            <img src="{% static 'images/menu.png' %}" class="menu-icon" onclick="menutoggle()">
+        </div>
+    </div>
+
+    <!-- Cart items details -->
+    <div class="small-container cart-page">
+        <table>
+        {% if cart and cart.added_items.all %}
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+            </tr>
+            {% for cart_item in cart.added_items.all %}
+            <tr>
+                <td>
+                    <div class="cart-info">
+                        <img src="{{cart_item.product.image.url}}">
+                        <div>
+                            <p>{{ cart_item.product.title }}</p>
+                            <small>Price: ${{cart_item.product.price}}</small>
+                            <br>
+                            <a href="{% url 'remove_item' cart_item.id %}">Remove</a>
+                        </div>
+                    </div>
+                </td>
+                <td><input type="number" value="{{cart_item.quantity}}" ></td>
+                <td>${% multiply cart_item.product.price  cart_item.quantity %}</td>
+            </tr>
+            {% endfor %}
+        
+        </table>
+        <div class="total-price">
+            <table>
+                <tr>
+                    <td>Subtotal</td>
+                    <td>${% gettotal cart %}</td>
+                </tr>
+                <tr>
+                    <td>Tax</td>
+                    <td>$35.00</td>
+                </tr>
+                <tr>
+                    <td>Total</td>
+                    <td>${% gettotal cart %}</td>
+                </tr>
+            </table>
+            
+        </div>
+        <button style="float: right; cursor: pointer; padding: 10px 15px; background-color: orange; border: none;">Place Order</button>
+        {% else %}
+        <p>Cart is Empty</p>
+        {% endif %}
+    </div>
+        
+
+   
+    <!-- javascript -->
+
+    <script>
+        var MenuItems = document.getElementById("MenuItems");
+        MenuItems.style.maxHeight = "0px";
+        function menutoggle() {
+            if (MenuItems.style.maxHeight == "0px") {
+                MenuItems.style.maxHeight = "200px"
+            }
+            else {
+                MenuItems.style.maxHeight = "0px"
+            }
+        }
+    </script>
+
+</body>
+
+</html>
